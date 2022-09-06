@@ -1,0 +1,708 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.ta.dto.*" %>
+<%@ page import="com.ta.dao.*" %>
+<%
+	//session.setAttribute("id",4);
+	//int loginId = (int)(session.getAttribute("id"));
+	//int loginId = 4;
+	// int member_id = (Integer)(session.getAttribute("member_id"));
+	//HomeDao hDao = new HomeDao();
+	//int member_id = 4;
+	//int corporation_id = 5;
+	//int corporation_id = (Integer)session.getAttribute("corporation_id");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>homehead1</title>
+	<link rel="icon" href="Images/favicon.ico" type="image/x-icon">
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<style>
+	ul {
+    	list-style-type: none;
+	}
+	a{
+		text-decoration: none;
+		color: black;
+	}
+	button{
+		border: none;
+	}
+	.home_topright{
+    	position: relative;
+	    display: flex;
+	    flex-direction: row;
+	    -webkit-box-align: center;
+	    align-items: center;
+	    -webkit-box-pack: end;
+	    justify-content: flex-end;
+	    padding-right: 60px;
+    	margin-top: 17px;
+    	padding-left: 20px;
+    }
+    .home_btn11{
+    	width: 32px;
+	    height: 32px;
+	    border-radius: 50%;
+	    padding: 1px;
+	    background-color: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+        background-image: url(https://down.collabee.co/userProfile/-1);
+	    border-radius: 50%;
+	    background-size: cover;
+	    background-position: center center;
+	    content: "";
+    }
+    .home_btn21{
+    	width: 32px;
+	    height: 32px;
+	    margin-left: 8px;
+	    padding-top: 4px;
+	    border-radius: 4px;
+	    cursor: pointer;
+	    background-color: white;
+    }
+    .home_btn21:hover{
+    	background-color: #f2f2f2;
+    }
+    .home_btn31{
+    	display: flex;
+	    flex-direction: row;
+	    -webkit-box-align: center;
+	    align-items: center;
+	    margin-left: 8px;
+	    padding: 0px 4px 0px 6px;
+	    border-radius: 4px;
+	    background-color: white;
+	    color: rgb(34, 34, 34);
+	    font-size: 13px;
+	    line-height: 32px;
+	    cursor: pointer;
+    }
+    .home_btn31:hover{
+    	background-color: #f2f2f2;
+    }
+    .home_number{
+    	display: inline-block;
+	    padding-left: 4px;
+	    padding-right: 4px;
+    }
+    .home_option{
+		position: absolute;
+	    display: none;
+	    z-index: 101;
+	}
+	.home_option2{
+		width: 290px;
+	    border-radius: 4px;
+	    box-shadow: rgb(0 0 0 / 10%) 0px 0px 8px 2px;
+	    background-color: rgb(255, 255, 255);
+	}
+	.home_option_header{
+		flex-shrink: 0;
+	    margin-right: 16px;
+	    display: flex;
+	    flex-direction: row;
+	}
+	.home_option_btn1{
+		margin-top: 17px;
+	    margin-left: 27px;
+		flex-shrink: 0;
+	    position: relative;
+	    width: 60px;
+	    height: 60px;
+	    border-radius: 50%;
+	    padding: 1px;
+	    background-color: rgba(0, 0, 0, 0.1);
+	    content: "";
+	    background-image: url(https://down.collabee.co/userProfile/-1);
+	    background-size: cover;
+	    background-position: center center;
+	    transition: border-color 0.3s ease 0s;
+	    cursor: pointer;
+	}
+	.home_option_btn1:after{
+		position: absolute;
+	    display: block;
+	    top: -1px;
+	    left: -1px;
+	    width: 58px;
+	    height: 58px;
+	    border-radius: 50%;
+	    content: "";
+	    border: 2px solid rgba(0, 0, 0, 0);
+	}
+	.home_option_btn1:hover::after{
+		border-color: rgb(217, 173, 43);
+	}
+	.home_option_ul{
+		display: flex;
+	    flex-direction: column;
+	    -webkit-box-pack: center;
+	    justify-content: center;
+	    padding-left: 57px;
+	}
+	.home_option_btn2{
+		width: 100%;
+	    text-align: left;
+	    font-size: 16px;
+	    font-weight: bold;
+	    line-height: 1.38;
+	    margin-left: -7px;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    overflow-wrap: normal;
+	    overflow: hidden;
+	    background-color: transparent;
+	    cursor: pointer;
+	    transition: color 0.2s ease 0s, background-color 0.2s ease 0s;
+	    color: rgb(34, 34, 34);
+	    pointer-events: auto;
+	}
+	.home_option_btn2:hover{
+		color: rgb(136, 136, 136);
+	}
+	.home_option_li{
+		font-size: 12px;
+	    line-height: 1.5;
+	    color: rgb(136, 136, 136);
+	    margin-top: 2px;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    overflow-wrap: normal;
+	    overflow: hidden;
+	}
+	.home_option_container{
+		border-top: 1px solid rgb(225, 225, 225);
+	    padding: 18px 0px;
+	    display: flex;
+	    flex-direction: column;
+	}
+	.home_option_container2{
+		display: block;
+	    color: rgb(34, 34, 34);
+	    font-size: 13px;
+	    line-height: 1.54;
+	    padding: 4px 4px 4px 18px;
+	    background-color: rgb(255, 255, 255);
+	    transition: background-color 0.2s ease 0s;
+	}
+	.home_option_container2:hover{
+		background-color: rgb(242, 242, 242);
+	    cursor: pointer;
+	}
+	.home_option_btn3{
+		outline: 0;
+		border: none;
+	    box-sizing: border-box;
+		text-align: left;
+	    display: block;
+	    color: rgb(34, 34, 34);
+	    font-size: 13px;
+	    line-height: 1.54;
+	    padding: 4px 4px 4px 18px;
+	    background-color: rgb(255, 255, 255);
+	    transition: background-color 0.2s ease 0s;
+	}
+	.home_option_btn3:hover{
+		background-color: rgb(242, 242, 242);
+	    cursor: pointer;
+	}
+	.homehead_background2{
+		display: none;
+		z-index: 100;
+		position: absolute;
+		top: 0px;
+	    left: -1600px;
+	    right: 0;
+	    bottom: 0;
+	    width: 1899px;
+	    height: 900px;
+		background-color: transparent;
+	}
+	</style>
+	<script>
+	
+	$(function(){
+		$("#makingsample, #language").click(function(){
+			alert("준비 중입니다.");
+		});
+		
+		$('.home_btn11').click(function (){
+        	var px = $(this).offset().left - 490;
+        	var py = $(this).offset().top + 30;
+        	if($('.home_option').css('display')=='none') {
+        		$('.home_option').css('display','block');
+        		$('.home_option').css('left',px+'px');
+            	$('.home_option').css('top',py+'px');
+        		$('.homehead_background2').css('display', 'block');
+        	} else {
+        		$('.home_option').css('display','none');
+        		$('.homehead_background2').css('display', 'none');
+        	}
+       });
+		
+		$('.homehead_background2').click(function() {
+        	$('.homehead_background2').css('display', 'none');
+      		if($('.home_option').css('display')!='none'){
+       			$('.home_option').css('display','none');
+      		}else if($('.alarm_expl').css('display')!='none'){
+      			$('.alarm_expl').css('display','none');
+      		}else if($('.folder_selection0').css('display')!='none'){
+      			$('.folder_selection0').css('display','none');
+      		}
+      	});
+		
+		$( document ).ready( function() {
+       	   //$('.btn11').attr("title", "${name}");
+       	   $('.home_btn11').attr({
+       		   title : "${name}",
+       		   style: "background-image: url(${picture});"
+       	   });
+	       	$('.home_option_btn1').attr({
+	    		   title : "${name}",
+	    		   style: "background-image: url(${picture});"
+	    	});
+       	});
+       	
+       	$("#logout").click(function(){
+			var result2 = confirm("로그아웃을 진행하시겠습니까?");
+			if(result2){
+				$.ajax({
+					type: 'get',
+					url: 'Controller?command=Option1MemberLogout',
+					success: function(d){
+						
+					},
+					error: function(r,s,e){
+						alert("error");
+					}
+				});
+			}
+		});
+       	
+      //여기서부터 태안부분
+       	$("#alarmBtn").on("click", function(){ // 알림 펼쳐보기 버튼
+            $("#alarm").slideToggle("fast");
+	    });
+	    $("#commpanyColleagueBtn").on("click", function(){ // 회사동료
+	        $("#corporationP").slideToggle("fast");
+	    });
+	    $("#externalPartnerBtn").on("click", function(){ // 외부협업자
+	        $("#partner").slideToggle("fast");
+	    });
+	    $(document).on("click",".retryInvite",function(){
+	        var mail = $(this).parent().children('.mail').text(); 
+			$.ajax({
+				type: 'get',
+				url: 'Controller?command=PartnerInvitationAgainAction',
+				data: {"email":mail},
+				datatype:'json',
+				successs: function(data){
+					
+				},
+				error: function(r,s,e){
+					
+				}
+				
+			});
+			alert(mail+" 님을 다시 초대 하였습니다.");
+	    });
+	    $(".hideBtn").click(function(){
+	        $(this).parent().parent().parent().css("display","none")
+	    });
+	    $(".home_btn31").click(function(){
+	    	var px = $(this).offset().left - 150;
+        	var py = $(this).offset().top + 30;
+        	$("#partners").css('left',px+'px');
+        	$("#partners").css('top',py+'px');
+        	$('.homehead_background2').css('display', 'block');
+	    	
+        	$("#partners").slideToggle("fast");
+	        $("#alarm").html("");
+	        $("#corporationP").html("");
+	        $("#partner").html("");
+	        $.ajax({
+	        	type: 'get',
+	        	url: 'Controller?command=PartnerContentAction',
+	        	data: {"loginId":<%=loginId%>},
+	        	datatype: 'json',
+	        	success: function(data){
+	        		$.each(data, function(index, item){
+	        			if(data.length==7){
+	            			if(index==0){
+	            				$("#countAlarm").text("알림 ("+item.alarm_count+")");
+	            			} else if(index==1){
+	            				$.each(item, function(index, item1){
+	            					var inviteParterList = 
+	            						"<div class='partnerAlarm' partner_id='"+item1.parter_id+"'>" +
+	                               			 "<h6>파트너 수락 대기중</h6>" +
+	                               			 "<div>" +
+	                                    		"<img src='image/partnerMail.svg'/>" +
+	                                    		"<span  class='mail'>"+item1.invite_mail+"</span>" +
+		                                        "<button class='inviteCancellationBtn'>초대 취소</button>" +
+		                                        "<button class='retryInvite'>다시 초대</button>" +
+		                                    "</div>" +
+	                            		"</div>";
+	                            	$("#alarm").append(inviteParterList);	
+	            				});
+	            			} else if(index==2) {
+	            				$.each(item, function(index, item2){
+	                				var inviteMeList = 
+	            						"<div class='partnerAlarm' member_id='"+item2.member_id+"'>" +
+	                               			 "<h6>파트너 수락 대기중</h6>" +
+	                               			 "<div>" +
+	                                    		"<img class='partnerImg' src='image/"+item2.picture+"'/>" +
+	                                    		"<span  class='mail'>"+item2.name+"</span>" +
+	                                    		"<button class='refuseBtn'>거절</button>" +
+		                                        "<button class='agreeBtn'>수락</button>" +
+		                                    "</div>" +
+	                            		"</div>";
+	                            	$("#alarm").append(inviteMeList);
+	            				});
+	            			} else if(index==3){
+								$("#countCorporationP").text("회사 동료 ("+item.companyColleague_count+")");
+							} else if(index==4){
+								$.each(item, function(index, item3){
+									var corporationP = 
+										"<div class='partnerBox' member_id='"+item3.member_id+"'>" +
+				                    		"<div class='partnerPictureBox'>" +
+				                        		"<div class='chattingMemberPicture' style='background-image: url("+item3.picture+");'></div>" +
+				                    		"</div>" +
+						                    "<div class='partnerInformation'>" +
+						                        "<div class='partnerName'>"+item3.name+"</div>" +
+						                        "<div class='partnerEmail'>"+item3.email+"</div>" +
+						                    "</div>" +
+						                "</div>";
+						            $("#corporationP").append(corporationP);    
+								});
+								$("#jobless").css("display","block");
+							} else if(index==5){
+								$("#countExternalP").text("외부 협업자 ("+item.externalPartner_count+")");
+							} else if(index==6){
+								$.each(item, function(index, item4){
+									var corporationP = 
+										"<div class='partnerBox' member_id='"+item4.member_id+"'>" +
+				                    		"<div class='partnerPictureBox'>" +
+				                        		"<div class='chattingMemberPicture' style='background-image: url("+item4.picture+");'></div>" +
+				                    		"</div>" +
+						                    "<div class='partnerInformation'>" +
+						                        "<div class='partnerName'>"+item4.name+"</div>" +
+						                        "<div class='partnerEmail'>"+item4.email+"</div>" +
+						                    "</div>" +
+						                "</div>";
+						            $("#partner").append(corporationP);    
+								});
+							}
+	        			} else {
+	        				if(index==0){
+	            				$("#countAlarm").text("알림 ("+item.alarm_count+")");
+	            			} else if(index==1){
+	            				$.each(item, function(index, item1){
+	            					var inviteParterList = 
+	            						"<div class='partnerAlarm' partner_id='"+item1.parter_id+"'>" +
+	                               			 "<h6>파트너 수락 대기중</h6>" +
+	                               			 "<div>" +
+	                                    		"<img src='image/partnerMail.svg'/>" +
+	                                    		"<span  class='mail'>"+item1.invite_mail+"</span>" +
+		                                        "<button class='inviteCancellationBtn'>초대 취소</button>" +
+		                                        "<button class='retryInvite'>다시 초대</button>" +
+		                                    "</div>" +
+	                            		"</div>";
+	                            	$("#alarm").append(inviteParterList);	
+	            				});
+	            			} else if(index==2) {
+	            				$.each(item, function(index, item2){
+	                				var inviteMeList = 
+	            						"<div class='partnerAlarm' member_id='"+item2.member_id+"'>" +
+	                               			 "<h6>파트너 수락 대기중</h6>" +
+	                               			 "<div>" +
+	                                    		"<img class='partnerImg' src='image/"+item2.picture+"'/>" +
+	                                    		"<span  class='mail'>"+item2.name+"</span>" +
+		                                        "<button class='agreeBtn'>수락</button>" +
+		                                        "<button class='refuseBtn'>거절</button>" +
+		                                    "</div>" +
+	                            		"</div>";
+	                            	$("#alarm").append(inviteMeList);
+	            				});
+	            				$("#jobless").css("display","none");
+	            			} else if(index==3){
+	        					$("#countCorporationP").text("파트너 ("+item.partner_count+")");
+	        				} else if(index==4){
+								$.each(item, function(index, item3){
+									var partner = 
+										"<div class='partnerBox' member_id='"+item3.member_id+"'>" +
+				                    		"<div class='partnerPictureBox'>" +
+				                        		"<div class='chattingMemberPicture' style='background-image: url('image/"+item3.picture+"');'></div>" +
+				                    		"</div>" +
+						                    "<div class='partnerInformation'>" +
+						                        "<div class='partnerName'>"+item3.name+"</div>" +
+						                        "<div class='partnerEmail'>"+item3.email+"</div>" +
+						                    "</div>" +
+						                "</div>";
+						            $("#corporationP").append(partner);    
+								});
+							}
+	        			}
+	        		});
+	        	},
+	        	error : function(r,s,e){
+	        		
+	        	}
+	        	
+	        });
+	    });
+	    $('.homehead_background2').click(function(){
+	    	$('.homehead_background2').css('display', 'none');
+	    	$("#partners").css('display', 'none');
+	    });
+	    $("#invitePartnerInput").focusin(function(){
+	    	$(this).css("outline","none");
+	    });
+	    $("#invitePartnerInput").focusout(function(){
+	    	$(this).css("outline","none");
+	    });
+	    $("#invitePartnerInput").keyup(function(e){
+	    	$(this).attr("value",$(this).val());
+	    	if(e.keyCode == 13){
+	    		var email = $(this).val();
+	    		if(email.includes("@") && email.includes(".")){
+	        		$(".inviteEmail").each(function(index, item){
+	        			if($(item).text()==email){
+	        				alert("이미 초대 리스트에 추가된 사람입니다.");
+	        				$("#invitePartnerInput").val("");
+	        				email="";
+	        			}
+	        		});
+	        		if(email!=""){
+	        			var inviteList =
+	            			"<div class='inviteList'>" +
+	                			"<svg style='padding-left: 4px; float: left;' xmlns='http://www.w3.org/2000/svg' width='17px' height='17px' viewBox='0 0 24 24'><path fill='#888888' fill-rule='evenodd' d='M20 4c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2l.01-12c0-1.1.89-2 1.99-2h16zM4 6v12h16V6H4zm15 3l-7 4-7-4V7l7 4 7-4v2z'></path></svg>" +
+	                			"<span class='inviteEmail'>"+$(this).val()+"</span>" +
+	                			"<button id='xbutton'>x</button>" +
+	               			 "</div>";
+	        			$("#inviteMails").append(inviteList);
+	        			$("#invitePartnerInput").val("");
+	        		}
+	    		}
+	    	}
+	    });
+	    $(document).on("click",".inviteCancellationBtn",function(){
+	    	var mail = $(this).parent().find(".mail").text();
+	    	$(this).parent().parent().remove();
+	    	$.ajax({
+	    		type: 'get',
+	    		url: 'Controller?command=PartnerInviteCancelAction',
+	    		data: {"loginId":<%=loginId%>,"inviteMail":mail},
+	    		datatype:'json',
+	    		success: function(data){
+	    			$("#countAlarm").text("알림 ("+data.alarm_count+")");
+	    		},
+	    		error: function(r,s,e){
+	    			alert("실패");
+	    		}
+	    	});
+	    });
+	    $(document).on("mouseenter",".inviteCancellationBtn",function(){
+	    	$(this).css("border","1px solid gray");
+	    });
+	    $(document).on("mouseleave",".inviteCancellationBtn",function(){
+	    	$(this).css("border","1px solid rgb(193,193,193)");
+	    });
+	    $(document).on("mouseenter",".retryInvite",function(){
+	    	$(this).css("border","1px solid rgb(179,142,34)");
+	    });
+	    $(document).on("mouseleave",".retryInvite",function(){
+	    	$(this).css("border","1px solid #d9ad2b");
+	    });
+	    $(document).on("mouseenter",".agreeBtn",function(){
+	    	$(this).css("border","1px solid rgb(179,142,34)");
+	    });
+	    $(document).on("mouseleave",".agreeBtn",function(){
+	    	$(this).css("border","1px solid #d9ad2b");
+	    });
+	    $(document).on("mouseenter",".refuseBtn",function(){
+	    	$(this).css("border","1px solid gray");
+	    });
+	    $(document).on("mouseleave",".refuseBtn",function(){
+	    	$(this).css("border","1px solid rgb(193,193,193)");
+	    });
+	    $(document).on("click","#xbutton",function(){
+	    	$(this).parent().remove();
+	    });
+	    $("#invitePartnerBtn").mouseenter(function(){
+	    	$(this).css("background-color","rgb(197,142,34)");
+	    });
+	    $("#invitePartnerBtn").mouseleave(function(){
+	    	$(this).css("background-color","#dab547");
+	    });
+	    $("#invitePartner").mouseenter(function(){
+	    	$(this).css("background-color","rgb(197,142,34)");
+	    });
+	    $("#invitePartner").mouseleave(function(){
+	    	$(this).css("background-color","#dab547");
+	    });
+	    $("#invitePartnerBtn").click(function(){
+	        var inviteList = new Array();
+	        $(".inviteEmail").each(function(index, item){
+	        	inviteList.push($(item).text());
+	        });
+	        if(inviteList.length==0){
+	        	alert("초대할 파트너의 이메일 주소를 입력해주세요.");
+	        } else {
+	            $.ajax({
+	            	type:'get',
+	            	url: 'Controller?command=PartnerInviteAction',
+	            	data: {"inviteList":inviteList,"loginId":<%=loginId%>},
+	            	datatype: 'json',
+	            	traditional : true,
+	            	success: function(data){
+	            		alert("성공적으로 초대 되었습니다.");
+	            		$("#partnerInviteBox").css("display","none");
+	            		$("#partners").css("display","none");
+	            		$("#inviteMails").html("");
+	            	},
+	            	error : function(r,s,e) {
+	            		alert("실패");
+	            	}
+	            });
+	        }
+	    });
+	    $("#search").focusin(function(){
+	    	$(this).css("outline","none");
+	    });
+	    $("#search").keyup(function(){
+	    	$(this).attr("value",$(this).val());
+	    	var search = $(this).val();
+	    	$(".mail").each(function(index, item){
+	    		if($(item).text().includes(search)){
+	    			$(item).parent().parent().css("display","block");
+	    		} else {
+	    			$(item).parent().parent().css("display","none");
+	    		}
+	    	});
+	    	$(".partnerName").each(function(index, item){
+	    		if($(item).text().includes(search)){
+	    			$(item).parent().parent().css("display","block");
+	    		} else {
+	    			$(item).parent().parent().css("display","none");
+	    		}
+	    	});
+			$(".partnerEmail").each(function(index, item){
+				if($(item).text().includes(search)){
+	    			$(item).parent().parent().css("display","block");
+	    		} else {
+	    			$(item).parent().parent().css("display","none");
+	    		}
+	    	});           	
+	    });
+	    $(document).on("click",".refuseBtn",function(){
+	    	var member_id = $(this).parent().parent().attr("member_id");
+	    	$(this).parent().parent().remove();
+	    	$.ajax({
+	    		type: 'get',
+	    		url:'Controller?command=PartnerInviteRefuseAction',
+	    		data: {"loginId":<%=loginId%>, "memberId":member_id},
+	    		datatype: 'json',
+	    		success: function(data){
+	    			$("#countAlarm").text("알림 ("+data.alarm_count+")");
+	    		},
+	    		error: function(r,s,e){
+	    			alert("실패");
+	    		}
+	    	});
+	    });
+	    $(document).on("click",".agreeBtn",function(){
+	    	var member_id = $(this).parent().parent().attr("member_id");
+	    	$("#partners").css("display","none");
+	    	$.ajax({
+	    		type: 'get',
+	    		url:'Controller?command=PartnerInviteAgreeAction',
+	    		data: {"loginId":<%=loginId%>, "memberId":member_id},
+	    		datatype: 'json',
+	    		success: function(data){
+	    			$("#countAlarm").text("알림 ("+data.alarm_count+")");
+	    		},
+	    		error: function(r,s,e){
+	    			alert("실패");
+	    		}
+	    	});
+	    });
+	    $("#search").keyup(function(key){
+	        $(this).attr("value",$(this).val());
+	        if(key.keyCode==13){
+	            alert($(this).val());
+	        }
+	    });
+	});
+	</script>
+</head>
+
+<body>
+<div class="home_option">
+		<div class="home_option2">
+			<div class="home_option3">
+				<div class="home_option_header">
+					<button class="home_option_btn1" onClick="location.href='Controller?command=option1'"></button>
+					<ul class="home_option_ul">
+						<li>
+							<button class="home_option_btn2" onClick="location.href='Controller?command=option1'">${name }</button>
+						</li>
+						<li class="home_option_li">${email }</li>
+						<li class="home_option_li" style="color: rgb(204, 153, 0);">${corName }</li>
+					</ul>
+				</div>
+				<div class="home_option_container">
+					<a class="home_option_container2" href="Controller?command=option1">설정</a>
+					<a class="home_option_container2" href="0option2.jsp">알림</a>
+				 	<%
+					if (corporation_id != 0){
+					%>
+					<a class="home_option_container2" href="0corporation1.jsp">회사 관리</a>
+					<%
+					}else{
+					%>
+					<a class="home_option_container2" href="Controller?command=option1">회사 찾기 및 만들기</a>
+					<% 
+					}
+					%>
+					<a class="home_option_container2" href="partner_management.jsp">파트너 관리</a>
+				</div>
+				<div class="home_option_container">
+					<a class="home_option_container2" href="setting_price.jsp">가격 및 결제</a>
+					<button class="home_option_btn3" id="makingsample">샘플 공간, 문서 만들기</button>
+					<a class="home_option_container2" href="0help1.jsp" target="_blank">사용 가이드</a>
+					<a class="home_option_container2" onclick="alert('준비 중입니다.')">데스크탑 앱 다운로드</a>
+				</div>
+				<div class="home_option_container">
+					<button class="home_option_btn3" id="language">Language</button>
+				</div>
+				<div class="home_option_container">
+					<button class="home_option_btn3" id="logout">로그아웃</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+<div class="home_topright">
+		<button title="" class="home_btn11"></button>
+		<button title="파트너 초대" class="home_btn21">
+		<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24"><path fill="#888888" fill-rule="evenodd" d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+		</button>
+		<button class="home_btn31">
+		<span>파트너</span>
+		<span class="home_number">${partnerN }</span>
+		</button>
+ </div>
+ 
+ <div class="homehead_background2"></div>
+ 
+</body>
+</html>

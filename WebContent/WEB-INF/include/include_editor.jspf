@@ -1,0 +1,275 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>문서에디터</title>
+  <!-- <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet"> -->
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->
+  <!-- <link href="assets/demo.css" rel="stylesheet">
+  <script src="assets/json-preview.js"></script> -->
+ <!--  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+
+<style>
+	.codex-editor--narrow .codex-editor__redactor{
+		width:600px;
+	}
+</style>
+</head>
+<body>
+  <div class="ce-example">
+    <div class="ce-example__header"></div>
+    <div class="ce-example__content _ce-example__content--small">
+      <div id="editorjs"></div>
+
+     <!--  <div class="ce-example__button" id="saveButton">
+        editor.save()
+      </div> -->
+     <!--   <div class="ce-example__statusbar">
+       Readonly: 
+        <b id="readonly-state">
+          Off
+        </b>
+        <div class="ce-example__statusbar-button" id="toggleReadOnlyButton">
+          toggle
+        </div> -->
+      </div>
+    </div>
+    
+    <div class="ce-example__output">
+      <pre class="ce-example__output-content" id="output"></pre>
+      <div class="ce-example__output-footer"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
+
+  <!-- Load Editor.js's Core -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+
+  <!-- Initialization -->
+  <script>
+	var workspaceId = <%=request.getParameter("workspaceId")%>;
+	<%-- var workspaceName = "<%=request.getParameter("workspaceName")%>"; --%>
+	var documentId = <%=request.getAttribute("documentId")%>;
+	var loginId = <%=loginId%>;
+	var x="<svg viewBox='0 0 24 24' width='24px' height='24px' class='closed'><path fill='rgb(255,255,255)' d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'></path></svg>"
+    	
+	/**
+     * To initialize the Editor, create a new instance with configuration object
+     * @see docs/installation.md for mode details
+     */
+    var editor = new EditorJS({ //선언
+      /**
+       * Enable/Disable the read only mode
+       */
+      readOnly: false,
+
+      /**
+       * Wrapper of Editor
+       */
+      holder: 'editorjs',
+
+      /**
+       * Common Inline Toolbar settings
+       * - if true (or not specified), the order from 'tool' property will be used
+       * - if an array of tool names, this order will be used
+       */
+      inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+      inlineToolbar: true,
+
+      /**
+       * Tools list
+       */
+      tools: {
+        /**
+         * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
+         */
+        header: {
+          class: Header,
+          inlineToolbar: ['marker', 'link'],
+          config: {
+			placeholder: 'good'
+          },
+          shortcut: 'CMD+SHIFT+H'
+        },
+
+        /**
+         * Or pass class directly without any configuration
+         */
+        image: SimpleImage,
+
+        list: {
+          class: List,
+          inlineToolbar: true,
+          shortcut: 'CMD+SHIFT+L'
+        },
+
+        checklist: {
+          class: Checklist,
+          inlineToolbar: true,
+        },
+
+        quote: {
+          class: Quote,
+          inlineToolbar: true,
+          config: {
+            quotePlaceholder: 'Enter a quote',
+            captionPlaceholder: 'Quote\'s author',
+          },
+          shortcut: 'CMD+SHIFT+O'
+        },
+
+        warning: Warning,
+
+        marker: {
+          class:  Marker,
+          shortcut: 'CMD+SHIFT+M'
+        },
+
+        code: {
+          class:  CodeTool,
+          shortcut: 'CMD+SHIFT+C'
+        },
+
+        delimiter: Delimiter,
+
+        inlineCode: {
+          class: InlineCode,
+          shortcut: 'CMD+SHIFT+C'
+        },
+
+        linkTool: LinkTool,
+
+        embed: Embed,
+
+        table: {
+          class: Table,
+          inlineToolbar: true,
+          shortcut: 'CMD+ALT+T'
+        },
+      },
+
+      /**
+       * This Tool will be used as default
+       */
+      // defaultBlock: 'paragraph',
+
+      /**
+       * Initial Editor data
+       */
+      data: 
+      {},
+     /*  onReady: function(){
+    	  saveButton.click();
+      },
+      onChange: function(api, event) {
+    	  //saved();
+        console.log('something changed', event);
+      } */
+    });
+
+    /**
+     * Saving button
+     */
+    const saveButton = document.getElementById('saveButton');//id가 saveButton인 애가 저장버튼이라는 선언
+
+    /**
+     * Toggle read-only button
+     */
+    const toggleReadOnlyButton = document.getElementById('toggleReadOnlyButton');
+    const readOnlyIndicator = document.getElementById('readonly-state');
+
+    /**
+     * Saving example
+     */
+     
+var g_savedData = "";   // 저장된 문서를 여기에 --> ajax로 저장시 사용하기로.
+   var documentId = <%=request.getAttribute("documentId")%>;
+	saveButton.addEventListener('click', function () {
+      editor.save()//저장 메서드
+        .then(function(savedData) {
+        	console.log(savedData);
+g_savedData = savedData;
+
+			$.ajax({
+				type:"post",
+				url:"Controller?command=saveDocument",
+				data: /* savedData */
+				{
+ 					"loginId":loginId,
+					"workspaceId":workspaceId,
+  					"title":$(".document_title").val(),
+					"content": JSON.stringify(savedData), 
+					"documentId": documentId
+					//블럭데이터 넣기
+				},
+				datatype:"json",
+				success:function(data){
+					//alert(data.new_content);
+					//var json_object = JSON.parse(data.new_content);
+					//console.log(json_object.blocks);
+					//editor.blocks.clear();//block 비우기
+					/* for(var i=0; i<=json_object.blocks.length-1; i++) {
+						editor.blocks.insert(json_object.blocks[i].type, json_object.blocks[i].data);
+					}  json_obj 가져와서 출력하기*/
+					var alert_message = $(".alert").html(x+"저장 됐습니다.");
+						alert_message.fadeIn(function(){
+			              	setTimeout(function(){
+			                alert_message.fadeOut();
+			              }, 2000);
+			            });
+			            //글자수에 따라 높이 정하기
+			            var height = alert_message.prop("scrollHeight");
+			            alert_message.css("height", height);
+			            
+			         var workspaceId = $("#drafts_ws").attr("workspaceId"); 
+			         var workspaceName = $("#drafts_ws").text();
+			         location.href="Controller?command=showNewDocument&documentId="+documentId+"&workspaceId="+<%=request.getParameter("workspaceId")%>+"&workspaceName="+workspaceName+"&loginId=<%=loginId%>";
+				},
+				error:function(r,s,e) {
+					console.log("ERROR - ajax:saveDocument");
+				}
+			});
+        	//alert("저장됨 (이 alert 나중에 지우세요): " + savedData.blocks[0].type);
+        	//alert(JSON.stringify(savedData));
+        	//$("#input_hidden_data").val(JSON.stringify(savedData));
+          	//버림:cPreview.show(savedData, document.getElementById("output"));
+        })
+        .catch(function(error) {
+          	console.error('Saving error', error);
+        });
+    });
+
+    /**
+     * Toggle read-only example
+     */
+    /* toggleReadOnlyButton.addEventListener('click', async () => {
+      const readOnlyState = await editor.readOnly.toggle();
+
+      readOnlyIndicator.textContent = readOnlyState ? 'On' : 'Off';
+    }); */
+  </script>
+</body>
+</html>
+
+
+
+
+</body>
+</html>

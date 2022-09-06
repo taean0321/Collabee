@@ -1,0 +1,402 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	#inviteMailListBox {
+   		height:300px;
+   		overflow: auto;
+   	}
+   	#inviteMailListBox::-webkit-scrollbar {
+           width:5px;
+    }
+     #inviteMailListBox::-webkit-scrollbar-thumb {
+        background-color: #e1e1e1;
+        border-radius: 5px;
+    }
+    #inviteMailListBox::-webkit-scrollbar-track {
+        background-color: white;
+        border-radius: 5px;
+    }    
+   	.inviteEmail {
+   		font-size: 13px; float:left; margin-top: 3px; margin-left: 8px;
+   	}
+   	.partnerImg {
+   		border-radius: 35px;
+   	}
+   	.agreeBtn{
+   		background-color: white;
+           width: 80px; height: 25px;  border: 1px solid #d9ad2b; border-radius: 5px; color:#d9ad2b;
+   	}
+   	.refuseBtn {
+   		background-color: white;
+           margin-top: 30px; margin-left: -75px; clear:both; padding: 0px; width: 80px; height: 25px; border-radius: 5px; border: 1px solid rgb(193,193,193); color:gray;
+   	}
+    .parentsAlarm {
+        display: block;
+    }
+	#partners {
+    	float: right;
+        border-radius: 4px;
+        width:200px;
+        display: none;
+        transform: scale(1, 1) translateZ(0px);
+ 		transition: opacity 386ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 257ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+     	box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+     	outline: none;
+	    position: absolute;
+	    overflow-y: auto;
+	    overflow-x: hidden;
+	    height: 662px;
+	    background-color: #fff;
+	    z-index: 101;
+	    position: absolute;
+    }
+    #partners::-webkit-scrollbar {
+    	width:4px;
+    }
+    #partners::-webkit-scrollbar-trace {
+    	background-color: white;
+        border-radius: 5px;
+    }
+    #partners::-webkit-scrollbar-thumb {
+    	background-color: rgb(225,225,225);
+        border-radius: 5px;
+    }
+    #partnerSc{
+        margin-top: 15px;
+    }
+    #invitePartner {
+        width: 180px;
+        height: 30px;
+        margin-left: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        background-color: #d9ad2b;
+        color: white;
+        border: none;
+    }
+    .gray {
+        filter: brightness(0) saturate(100%) invert(57%) sepia(1%) saturate(0%) hue-rotate(282deg) brightness(94%) contrast(88%);
+    }
+    .hideBtn, #inviteXbtn {
+        float: right;
+        width: 20px;
+        height: 20px;
+        padding: 0px;
+        border:none;
+        background-color:white;
+    }
+    .buttonImg{
+        color: #aaa;
+        font-size: 28px;
+    	font-weight: bold;
+    }
+    .buttonImg:hover{
+	    color: black;
+	    text-decoration: none;
+	    cursor: pointer;
+    }
+    #partnerInviteBox {
+        top: 200px;
+ 	    left: 500px;
+        z-index: 1000;
+ 	    position: absolute;
+        width: 850px;
+	    height: 500px;
+	    padding: 20px 32px 32px;
+	    display: none;
+	    flex-direction: column;
+        border-radius: 4px;
+        background-color: #fff;
+        flex: 0 1 auto;
+        box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+    }
+    .inviteCancellationBtn {
+        background-color: white;
+        margin-top: 15px; margin-left: -25px; clear:both; padding: 0px; width: 80px; height: 25px; border-radius: 5px; border: 1px solid rgb(193,193,193); color:gray;
+    }
+    .retryInvite {
+        background-color: white;
+        width: 80px; height: 25px;  border: 1px solid #d9ad2b; border-radius: 5px; color:#d9ad2b;
+    }
+    .chattingMemberPicture {
+        width: 32px; 
+        height: 32px;
+        float: left; 
+        border-radius: 35px; 
+    }
+    .onOffImg {        
+        width:8px; 
+        float: right;
+        border-radius: 35px;
+        border: 1px solid gray;
+        filter: brightness(0) saturate(100%) invert(92%) sepia(82%) saturate(4726%) hue-rotate(30deg) brightness(112%) contrast(97%);
+        background-color: #96fc1f;
+        display: block;
+    }
+    #alarm {
+    	display: block;
+    }
+    .partnerAlarm {
+    	margin-left: 10px; margin-top:5px;
+    }
+    .partnerAlarm > h6 {
+    	padding:0px; margin-top: 0px; margin-bottom: 5px;
+    }
+    .partnerAlarm > div {
+    	width: 178px; height:70px; border-bottom:1px solid #c1c1c1;
+    }
+    .partnerAlarm > div > img{
+    	width:25px; float: left; margin-left: 5px;
+    }
+    .mail {
+    	font-size: 13px; float:left; margin-top: 3px; margin-left: 8px; color:#888888;
+    }
+    #countCorporationP {
+    	font-size: 12px; color: gray;"
+    }
+    #countCorporationP > img {
+    	width:14px; height:14px; vertical-align: bottom; margin: 0px; padding: 0px;
+    }
+    #corporationP {
+    	display: block;
+    }
+    .partnerBox {
+   		margin-top: 5px; clear: both; margin-left: 5px; height:40px;
+    }
+    .partnerPictureBox {
+    	float: left; margin-left: 5px; margin-top: 3px;
+    }
+    .partnerName {
+    	font-size: 12px; float: left; width:128px ;
+    }
+    .partnerEmail {
+    	font-size: 12px; color:#888888;
+    }
+    .partnerInformation{
+    	float:left; margin-left: 2px;
+    }
+    #countAlarm {
+    	font-size: 12px; color: gray;
+    }
+    #countAlarm > button {
+    	width: 15px; height: 15px; padding: 0px; vertical-align: center; border:none; background-color: white;
+    }
+    .gray {
+    	width:14px; height:14px; vertical-align: bottom; margin: 0px; padding: 0px;
+    }
+    #countExternalP {
+    	font-size: 12px; color: gray;
+    }
+    .slideBtn {
+    	width: 15px; height: 15px; padding: 0px; vertical-align: center; border:none; background-color: white;
+    }
+    #search {
+    	width:150px; height:25px; border:none; vertical-align: top; border-radius: 5px; padding: 0px;
+    }
+    #inviteAndSearchBox {
+    	width:178px; height: 25px;border:1px solid #c1c1c1; margin-top: 10px; margin-left: 10px; border-radius: 5px; padding: 0px;
+    }
+    #alarmDiv {
+    	margin-left: 10px;
+    }
+    #countCorporationPDiv {
+    	margin-left: 10px; margin-top: 15px;
+    }
+    #countExternalPDiv {
+    	margin-left: 10px; margin-top: 15px; clear:both;
+    }
+    #invitePartnerBtn {
+    	margin-top: 40px; height:30px; width:385px; border:none; border-radius:5px; color:white; background-color:#dab547
+    }
+    #partnerInviteBox > h4 {
+    	margin-top: 0px; color:#dab547; margin-bottom: 10px; float: left;
+    }
+    #invitePartnerInput {
+    	width:380px; height:35px; border:1px solid #d9ad2b; border-radius: 5px;
+    	padding-left:5px;
+    	box-shadow: rgb(217 173 43) 0px 0px 0px 1px inset, rgb(217 173 43 / 20%) 0px 0px 0px 4px;
+    }
+    #explanationP1 {
+    	margin: 0px; clear: both;
+    	font-size: 12px;
+  line-height: 1.5;
+  color: rgb(136, 136, 136);
+    }
+    #explanationP2 {
+    	margin-top: 0px;
+    	font-size: 12px;
+  line-height: 1.5;
+  color: rgb(136, 136, 136);
+    }
+    #explanationP3 {
+    	margin: 10px 0px 0px 0px;
+    	font-size: 12px;
+  line-height: 1.5;
+  color: rgb(136, 136, 136);
+    }
+    .explanationP4 {
+     font-size: 12px;
+  color: rgb(136, 136, 136);
+  line-height: 1.5;
+    }
+    #partnerInviteListBox {
+    	float:left; margin-left: 30px;
+    }
+    #partnerInviteListBox > div {
+    	border: 1px solid rgb(225, 225, 225); border-radius:5px; height:300px;
+    	padding-left : 20px;
+    }
+    #invitePartnerInputDiv {
+    	float:left; border-right: 1px solid #e2e2e2; width:400px; height:350px;
+    }
+    .inviteList {
+    		background-color: #fafafa;
+    		border: 1px solid #e0ddd9;
+		border-radius: 15px;
+		width: 200px;
+		height: 20px;
+		padding: 5px;
+		margin-bottom: 5px;
+    }
+    .inviteList::-webkit-scrollbar {
+    		width: 3px;
+    }
+    .inviteList::-webkit-scrollbar-track {
+   		background-color: white;
+    		border-radius: 5px;
+    }
+    .inviteList::-webkit-scrollbar-thumb {
+    	background-color: rgb(225,225,225);
+        border-radius: 5px;
+    }
+    .inviteList > img {
+    	width: 15px;
+    	float:left;
+    	margin-left: 5px;
+    	margin-top : 2px;
+    	filter: brightness(0) saturate(100%) invert(59%) sepia(10%) saturate(15%) hue-rotate(81deg) brightness(90%) contrast(88%);
+    }
+    .inviteList > span {
+    	font-size:12px;
+    	color: black;
+    	margin-top:0px;
+    }
+    .inviteList > button {
+       	width: 20px;
+       	height:19px;
+       	margin: 0px 5px 0px 0px;
+       	float: right;
+       	background-color: #fafafa;
+       	border:none;
+   	}
+   	.partnerMag{
+	    display: inline-block;
+	    vertical-align: middle;
+	    shape-rendering: inherit;
+	    fill: rgb(193, 193, 193);
+	    margin-left: 5px;
+   		margin-top: -3px;
+   	}
+   	.homehead_background1{
+   		display: none;
+		z-index: 110;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom : 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(34, 34, 34, 0.8);
+   	}
+
+</style>
+
+</head>
+<body>
+<div class="partner_layout">
+	 	<div id="partners">
+        <button id="invitePartner">파트너 초대하기</button>
+        <div id="inviteAndSearchBox">
+           <svg viewBox="0 0 24 24" width="17px" height="17px" class="partnerMag"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" color="#C1C1C1"></path></svg>
+            <input id="search" type="search"  placeholder="이름 또는 이메일"/>
+        </div>
+        <div id="partnerSc">
+            <div id='alarmDiv'>
+                <span id='countAlarm'>알림 ()</span><button class='slideBtn'><img class="gray" id="bt1" src="image/down.svg"/></button>
+            </div>
+            <div id="alarm">
+                <div class="partnerAlarm">
+                    <h6>파트너 수락 대기중</h6>
+                    <div>
+                        <img src="image/partnerMail.svg"/>
+                        <span  class="mail">yura2704@gmail.coom</span>
+                        <button class="inviteCancellationBtn">초대 취소</button>
+                        <button class="retryInvite">다시 초대</button>
+                    </div>
+                </div>
+            </div>    
+            <div id="countCorporationPDiv">
+                <span id="countCorporationP">회사 동료 ()</span><button class='slideBtn'><img class="gray" id="bt2" src="image/down.svg"/></button>
+            </div>
+            <div id="corporationP">
+                <div class='partnerBox'>
+                    <div class='partnerPictureBox'>
+                        <div class="chattingMemberPicture"><img class="onOffImg" src="image/bell.svg"/></div>
+                    </div>
+                    <div class='partnerInformation'>
+                        <div class='partnerName'>강태안</div>
+                        <div class='partnerEmail'>jm</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="jobless">
+	            <div id="countExternalPDiv">
+	                <span id="countExternalP">외부 협업자 ()</span><button class='slideBtn'><img class="gray" id="bt3" src="image/down.svg"/></button>
+	            </div>
+	            <div id="partner" style="display: block;">
+	                <div class='partnerBox'>
+	                    <div class='partnerPictureBox'>
+	                        <div class="chattingMemberPicture"><img class="onOffImg" src="image/bell.svg"/></div>
+	                    </div>
+	                    <div class='partnerInformation'>
+	                        <div class='partnerName'>강태안</div>
+	                        <div class='partnerEmail'>jm</div>
+	                    </div>
+	                </div>
+	            </div>
+            </div>
+        </div>
+    </div>
+<div class="homehead_background1"></div>    
+    <div id="partnerInviteBox">
+        <h4>파트너 초대</h4>
+        <button id="inviteXbtn"><span class="buttonImg">&times;</span></button>
+        <p id="explanationP1">더 많은 사람을 초대하여 원활한 의사소통으로 업무를 효율적으로 처리해보세요.</p>
+        <p id="explanationP2">회사 동료뿐만 아니라 외부 협업자도 파트너로 초대할 수 있습니다.</p>
+        <div id="invitePartnerInputDiv">
+            <p class="explanationP4"><b>파트너 초대</b></p>
+            <input id="invitePartnerInput" type="search" placeholder="이메일 주소를 입력하고 Enter키를 눌러주세요"/>
+            <p id="explanationP3">이메일 주소를 입력하고 Enter키를 눌러 동료들을 초대해 보세요.</p>
+        </div>
+        <div id="partnerInviteListBox">
+            <p class="explanationP4"><b>초대 리스트</b></p>
+            <div id="inviteMailListBox">
+                <p class="explanationP4">초대 메일을 보낼 이메일 주소를 여기에서 확인할 수 있습니다.</p>
+                <div id="inviteMails">                </div>
+            </div>
+            <button id="invitePartnerBtn">파트너 초대하기</button>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>
